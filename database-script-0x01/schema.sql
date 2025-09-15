@@ -1,3 +1,8 @@
+CREATE TYPE user_role AS ENUM('guest', 'host', 'admin');
+CREATE TYPE booking_status AS ENUM('pending', 'confirmed', 'canceled');
+CREATE TYPE payment_method AS ENUM('credit_card', 'paypal', 'stripe');
+
+
 CREATE TABLE IF NOT EXISTS User (
     user_id PRIMARY KEY UUID,
     first_name VARCHAR NOT NULL,
@@ -5,7 +10,7 @@ CREATE TABLE IF NOT EXISTS User (
     email VARCHAR UNIQUE NOT NULL,
     password_hash VARCHAR NOT NULL,
     phone_number VARCHAR NULL,
-    role ENUM(guest,host,admin) NOT NULL,
+    role user_role NOT NULL,
     created_at timestamp(0) with time zone NOT NULL DEFALULT NOW()
     );
 
@@ -29,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Booking (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     total_price DECIMAL NOT NULL,
-    status ENUM(pending,confirmed,canceled) NOT NULL,
+    status booking_status NOT NULL,
     created_at TIMESTAMP(0) with time zone NOT NULL DEFAULT NOW(),
 
     CONSTRAINT fk_property_id FOREIGN KEY references Property(property_id),
@@ -41,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Payment (
     booking_id UUID,
     amount DECIMAL NOT NULL,
     payment_date TIMESTAMP(0) with time zone NOT NULL DEFAULT NOW(),
-    payment_method ENUM(credit_card,paypal,stripe) NOT NULL,
+    payment_method payment_method NOT NULL,
 
     CONSTRAINT fk_booking_id FOREIGN KEY references Booking(booking_id)
 );
