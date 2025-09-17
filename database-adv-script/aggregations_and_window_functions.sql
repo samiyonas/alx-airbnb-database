@@ -9,4 +9,10 @@ SELECT
             WHERE p.property_id = Booking.property_id
         ) DESC
     ) AS Rank
+    ROW_NUMBER() OVER(
+        ORDER BY (
+            SELECT COUNT(*) FROM Booking
+            WHERE p.property_id = Booking.property_id
+        ) DESC
+    ) AS row_num
 FROM Property p;
